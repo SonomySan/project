@@ -5,11 +5,11 @@ import random
 
 FPS = 50
 pygame.init()
-size = width, height = 1000, 1000
+size = width, height = 800, 800
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Перемещение героя")
 clock = pygame.time.Clock()
-size_im = 50, 50
+size_im = width // 20, height // 20
 
 
 def load_image(name, colorkey=None):
@@ -208,7 +208,7 @@ tile_images = {
     'end': load_image('end.jpg')
 }
 player_image = load_image('mario.png', -1)
-tile_width = tile_height = 50
+tile_width = tile_height = size_im[0]
 player = None
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
@@ -229,7 +229,7 @@ class Player(pygame.sprite.Sprite):
         self.image = player_image
         self.pos = (pos_x, pos_y)
         self.rect = self.image.get_rect().move(
-            tile_width * pos_x + 15, tile_height * pos_y + 5)
+            tile_width * pos_x + 15, tile_height * pos_y + 1)
 
     def move(self, x, y):
         self.pos = (self.pos[0] + x, self.pos[1] + y)
@@ -258,7 +258,8 @@ start_screen()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
+            sys.exit()
         key = pygame.key.get_pressed()
         x = player.pos[0]
         y = player.pos[1]
@@ -283,6 +284,7 @@ while running:
         if my_level[y][x] == '$':
             running = False
     pygame.display.flip()
+    clock.tick(FPS)
     screen.fill((255, 255, 255))
     all_sprites.draw(screen)
     tiles_group.draw(screen)
@@ -296,5 +298,5 @@ while True:  # Концовка
     screen.fill((0, 0, 0))
     font = pygame.font.Font(None, 100)
     text = font.render("You win!!!", True, (255, 255, 255))
-    screen.blit(text, (480, 480))
+    screen.blit(text, ((width - size_im[0]) // 2, (height - size_im[1]) // 2))
     pygame.display.flip()
